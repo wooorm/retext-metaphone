@@ -1,0 +1,17 @@
+{
+  "name": "retext-metaphone",
+  "repository": "wooorm/retext-metaphone",
+  "description": "Retext implementation of the Metaphone algorithm",
+  "version": "0.0.1",
+  "keywords": [
+    "metaphone",
+    "retext"
+  ],
+  "dependencies": {
+    "wooorm/metaphone": "~0.0.1"
+  },
+  "scripts" : [
+    "index.js"
+  ],
+  "license": "MIT"
+}
