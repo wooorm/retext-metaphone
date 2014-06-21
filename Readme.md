@@ -4,7 +4,7 @@
 
 ---
 
-**[retext](https://github.com/wooorm/retext "Retext")** implementation of the [original Metaphone](http://en.wikipedia.org/wiki/Metaphone) algorithm.
+**[Retext](https://github.com/wooorm/retext "Retext")** implementation of the [original Metaphone](http://en.wikipedia.org/wiki/Metaphone) algorithm.
 
 ## Installation
 
