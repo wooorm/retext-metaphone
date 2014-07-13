@@ -2,7 +2,7 @@
   "name": "retext-metaphone",
   "repository": "wooorm/retext-metaphone",
   "description": "Retext implementation of the Metaphone algorithm",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "keywords": [
     "metaphone",
     "retext"
