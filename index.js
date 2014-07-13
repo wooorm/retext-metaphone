@@ -4,16 +4,21 @@ exports = module.exports = function () {};
 
 var metaphone = require('metaphone');
 
-function onchangetext(value) {
-    var data = this.data;
+function onchange() {
+    var data = this.data,
+        value = this.toString();
+
     data.phonetics = value ? metaphone(value) : null;
+
     if ('stem' in data) {
         data.stemmedPhonetics = value ? metaphone(data.stem) : null;
     }
 }
 
 function attach(retext) {
-    retext.parser.TextOM.WordNode.on('changetext', onchangetext);
+    retext.parser.TextOM.WordNode.on('changetextinside', onchange);
+    retext.parser.TextOM.WordNode.on('removeinside', onchange);
+    retext.parser.TextOM.WordNode.on('insertinside', onchange);
 }
 
 exports.attach = attach;
