@@ -1,24 +1,63 @@
 'use strict';
 
-exports = module.exports = function () {};
+/**
+ * Dependencies.
+ */
 
-var metaphone = require('metaphone');
+var phonetics;
+
+phonetics = require('metaphone');
+
+/**
+ * Define `metaphone`.
+ */
+
+function metaphone() {}
+
+/**
+ * Change handler
+ *
+ * @this {WordNode}
+ */
 
 function onchange() {
-    var data = this.data,
-        value = this.toString();
+    var data,
+        value;
 
-    data.phonetics = value ? metaphone(value) : null;
+    data = this.data;
+    value = this.toString();
+
+    data.phonetics = value ? phonetics(value) : null;
 
     if ('stem' in data) {
-        data.stemmedPhonetics = value ? metaphone(data.stem) : null;
+        data.stemmedPhonetics = value ? phonetics(data.stem) : null;
     }
 }
 
+/**
+ * Define `attach`.
+ *
+ * @param {Retext} retext
+ */
+
 function attach(retext) {
-    retext.parser.TextOM.WordNode.on('changetextinside', onchange);
-    retext.parser.TextOM.WordNode.on('removeinside', onchange);
-    retext.parser.TextOM.WordNode.on('insertinside', onchange);
+    var WordNode;
+
+    WordNode = retext.TextOM.WordNode;
+
+    WordNode.on('changetextinside', onchange);
+    WordNode.on('removeinside', onchange);
+    WordNode.on('insertinside', onchange);
 }
 
-exports.attach = attach;
+/**
+ * Expose `attach`.
+ */
+
+metaphone.attach = attach;
+
+/**
+ * Expose `metaphone`.
+ */
+
+module.exports = metaphone;
