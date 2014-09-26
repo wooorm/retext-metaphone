@@ -2,15 +2,19 @@
   "name": "retext-metaphone",
   "version": "0.1.0",
   "description": "Retext implementation of the Metaphone algorithm",
+  "license": "MIT",
   "keywords": [
     "metaphone",
     "retext"
   ],
-  "author": "Titus Wormer <tituswormer@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "metaphone": "^0.1.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wooorm/retext-metaphone.git"
+  },
+  "author": "Titus Wormer <tituswormer@gmail.com>",
   "devDependencies": {
     "eslint": "^0.8.0",
     "istanbul": "^0.3.0",
@@ -20,10 +24,6 @@
     "retext-content": "^0.2.2",
     "retext-porter-stemmer": "^0.1.1",
     "retext-visit": "^0.1.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wooorm/retext-metaphone.git"
   },
   "scripts": {
     "test": "node_modules/.bin/_mocha --reporter spec --check-leaks -u exports spec/retext-metaphone.spec.js",
