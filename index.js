@@ -9,12 +9,6 @@ var phonetics;
 phonetics = require('metaphone');
 
 /**
- * Define `metaphone`.
- */
-
-function metaphone() {}
-
-/**
  * Change handler
  *
  * @this {WordNode}
@@ -35,12 +29,12 @@ function onchange() {
 }
 
 /**
- * Define `attach`.
+ * Define `metaphone`.
  *
  * @param {Retext} retext
  */
 
-function attach(retext) {
+function metaphone(retext) {
     var WordNode;
 
     WordNode = retext.TextOM.WordNode;
@@ -49,12 +43,6 @@ function attach(retext) {
     WordNode.on('removeinside', onchange);
     WordNode.on('insertinside', onchange);
 }
-
-/**
- * Expose `attach`.
- */
-
-metaphone.attach = attach;
 
 /**
  * Expose `metaphone`.
