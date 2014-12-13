@@ -1,6 +1,6 @@
 # retext-metaphone [![Build Status](https://img.shields.io/travis/wooorm/retext-metaphone.svg?style=flat)](https://travis-ci.org/wooorm/retext-metaphone) [![Coverage Status](https://img.shields.io/coveralls/wooorm/retext-metaphone.svg?style=flat)](https://coveralls.io/r/wooorm/retext-metaphone?branch=master)
 
-**[Retext](https://github.com/wooorm/retext "Retext")** implementation of the [Metaphone](http://en.wikipedia.org/wiki/Metaphone) algorithm.
+**[Retext](https://github.com/wooorm/retext)** implementation of the [Metaphone](http://en.wikipedia.org/wiki/Metaphone) algorithm.
 
 ## Installation
 
@@ -82,7 +82,7 @@ retext.parse('A detestable paragraph.', function (err, tree) {
 
 ## API
 
-None, the plugin automatically detects the phonetics of each word (using [wooorm/metaphone](https://github.com/wooorm/metaphone)), and stores the phonetics in `wordNode.data.phonetics`. If a stemmer is used, the stemmed phonetics are stored in `wordNode.data.stemmedPhonetics`.
+None, **retext-metaphone** automatically detects the phonetics of each [`WordNode`](https://github.com/wooorm/textom#textomwordnode-nlcstwordnode) (using **[wooorm/metaphone](https://github.com/wooorm/metaphone)**), and stores the phonetics in `node.data.phonetics`. If a stemmer is used, the stemmed phonetics are stored in `node.data.stemmedPhonetics`.
 
 ## License
 
