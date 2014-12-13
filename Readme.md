@@ -84,6 +84,20 @@ retext.parse('A detestable paragraph.', function (err, tree) {
 
 None, **retext-metaphone** automatically detects the phonetics of each [`WordNode`](https://github.com/wooorm/textom#textomwordnode-nlcstwordnode) (using **[wooorm/metaphone](https://github.com/wooorm/metaphone)**), and stores the phonetics in `node.data.phonetics`. If a stemmer is used, the stemmed phonetics are stored in `node.data.stemmedPhonetics`.
 
+## Performance
+
+On a MacBook Air, **retext** performs about 24% slower with **retext-metaphone**.
+
+```
+           retext w/o retext-metaphone
+  225 op/s » A paragraph (5 sentences, 100 words)
+   25 op/s » A section (10 paragraphs, 50 sentences, 1,000 words)
+
+           retext w/ retext-metaphone
+  171 op/s » A paragraph (5 sentences, 100 words)
+   16 op/s » A section (10 paragraphs, 50 sentences, 1,000 words)
+```
+
 ## License
 
 MIT © [Titus Wormer](http://wooorm.com)
