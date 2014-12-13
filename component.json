@@ -1,6 +1,6 @@
 {
   "name": "retext-metaphone",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Retext implementation of the Metaphone algorithm",
   "license": "MIT",
   "keywords": [
