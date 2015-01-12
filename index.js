@@ -39,9 +39,7 @@ function metaphone(retext) {
 
     WordNode = retext.TextOM.WordNode;
 
-    WordNode.on('changetextinside', onchange);
-    WordNode.on('removeinside', onchange);
-    WordNode.on('insertinside', onchange);
+    WordNode.on('changeinside', onchange);
 }
 
 /**
