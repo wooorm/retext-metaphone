@@ -22,6 +22,12 @@ $ component install wooorm/retext-metaphone
 $ bower install retext-metaphone
 ```
 
+[Duo](http://duojs.org/#getting-started):
+
+```javascript
+var metaphone = require('wooorm/retext-metaphone');
+```
+
 ## Usage
 
 ```javascript
