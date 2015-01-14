@@ -109,4 +109,4 @@ On a MacBook Air, **retext** performs about 24% slower with **retext-metaphone**
 
 ## License
 
-MIT © [Titus Wormer](http://wooorm.com)
+[MIT](LICENSE) © [Titus Wormer](http://wooorm.com)
