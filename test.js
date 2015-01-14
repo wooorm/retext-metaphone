@@ -1,6 +1,6 @@
 'use strict';
 
-/**
+/*
  * Dependencies.
  */
 
@@ -20,7 +20,7 @@ visit = require('retext-visit');
 content = require('retext-content');
 assert = require('assert');
 
-/**
+/*
  * Retext.
  */
 
@@ -40,7 +40,7 @@ retextWithStemmer = new Retext()
     .use(metaphone)
     .use(stemmer);
 
-/**
+/*
  * Fixtures.
  */
 
@@ -54,7 +54,7 @@ otherWords = ['A', 'detestable', 'vile', 'paragraph'];
 otherPhonetics = ['A', 'TTSTBL', 'FL', 'PRKRF'];
 stemmedOtherPhonetics = ['A', 'TTST', 'FL', 'PRKRF'];
 
-/**
+/*
  * Tests.
  */
 

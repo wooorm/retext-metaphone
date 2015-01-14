@@ -1,6 +1,6 @@
 'use strict';
 
-/**
+/*
  * Dependencies.
  */
 
@@ -13,7 +13,6 @@ phonetics = require('metaphone');
  *
  * @this {WordNode}
  */
-
 function onchange() {
     var data,
         value;
@@ -33,7 +32,6 @@ function onchange() {
  *
  * @param {Retext} retext
  */
-
 function metaphone(retext) {
     var WordNode;
 
@@ -42,7 +40,7 @@ function metaphone(retext) {
     WordNode.on('changeinside', onchange);
 }
 
-/**
+/*
  * Expose `metaphone`.
  */
 
