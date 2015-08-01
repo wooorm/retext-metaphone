@@ -1,6 +1,6 @@
 {
   "name": "retext-metaphone",
-  "main": "index.js",
+  "main": "retext-metaphone.js",
   "description": "Retext implementation of the Metaphone algorithm",
   "license": "MIT",
   "keywords": [

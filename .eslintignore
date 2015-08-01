@@ -1,0 +1,6 @@
+build/
+components/
+coverage/
+build.js
+retext-metaphone.js
+retext-metaphone.min.js

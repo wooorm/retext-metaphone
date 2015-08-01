@@ -8,10 +8,12 @@
     "retext"
   ],
   "dependencies": {
-    "wooorm/metaphone": "^0.1.0"
+    "wooorm/metaphone": "^0.1.0",
+    "wooorm/unist-util-visit": "^1.0.0",
+    "wooorm/nlcst-to-string": "~0.1.5"
   },
   "repository": "wooorm/retext-metaphone",
-  "scripts" : [
+  "scripts": [
     "index.js"
   ]
 }
