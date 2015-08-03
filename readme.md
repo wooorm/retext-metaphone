@@ -43,7 +43,7 @@ RootNode[1]
       ├─ WordNode[1] [data={"phonetics":"SMPL"}]
       │  └─ TextNode: 'simple'
       ├─ WhiteSpaceNode: ' '
-      ├─ WordNode[1] [data={"phonetics":"ENKLKSH"}]
+      ├─ WordNode[1] [data={"phonetics":"ENKLX"}]
       │  └─ TextNode: 'English'
       ├─ WhiteSpaceNode: ' '
       ├─ WordNode[1] [data={"phonetics":"SNTNS"}]

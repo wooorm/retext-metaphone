@@ -23,7 +23,7 @@ var equal = assert.equal;
  */
 
 var sentence = 'A simple, English, sentence';
-var phonetics = ['A', 'SMPL', 'ENKLKSH', 'SNTNS'];
+var phonetics = ['A', 'SMPL', 'ENKLX', 'SNTNS'];
 
 /**
  * Example stemmer, which expects the tree to equal `otherWord`.

@@ -63,236 +63,120 @@ function attacher() {
 module.exports = attacher;
 
 },{"metaphone":2,"nlcst-to-string":3,"unist-util-visit":4}],2:[function(require,module,exports){
+/**
+ * @author Titus Wormer
+ * @copyright 2014-2015 Titus Wormer
+ * @license MIT
+ * @module metaphone
+ * @fileoverview Fast Metaphone implementation.
+ */
+
 'use strict';
 
-var EXPRESSION_DUPLICATE_ADJACENT_LETTERS,
-    EXPRESSION_INITIALS,
-    EXPRESSION_MB_FINAL,
-    EXPRESSION_C,
-    EXPRESSION_TO_X,
-    EXPRESSION_TO_S,
-    EXPRESSION_D_TO_J,
-    EXPRESSION_D,
-    EXPRESSION_G_NOT_FINAL,
-    EXPRESSION_GN_OR_GNED_FINAL,
-    EXPRESSION_G_TO_J,
-    EXPRESSION_G,
-    EXPRESSION_H,
-    EXPRESSION_CK,
-    EXPRESSION_PH,
-    EXPRESSION_Q,
-    EXPRESSION_S,
-    EXPRESSION_T,
-    EXPRESSION_TH,
-    EXPRESSION_TCH,
-    EXPRESSION_V,
-    EXPRESSION_WH,
-    EXPRESSION_W,
-    EXPRESSION_INITIAL_X,
-    EXPRESSION_X,
-    EXPRESSION_Y,
-    EXPRESSION_Z,
-    EXPRESSION_VOWELS;
-
 /*
- * Matches duplicate characters (excluding `c`), of which
- * one should be dropped.
+ * Constants.
  */
 
-EXPRESSION_DUPLICATE_ADJACENT_LETTERS = /([^c])\1/g;
-
-/*
- * Matches two characters at the start of a string, of
- * which the first is silent.
- */
-
-EXPRESSION_INITIALS = /^(kn|gn|pn|ae|wr)/g;
-
-/*
- * Matches `mb` at the end of string, of which the `b`
- * should be dropped.
- */
-
-EXPRESSION_MB_FINAL = /(m)b$/g;
-
-/*
- * Matches `c`.
- */
-
-EXPRESSION_C = /c/g;
-
-/*
- * Matches values which should be transformed to `x`.
- */
-
-EXPRESSION_TO_X = /^ch|[^s]ch|cia/g;
-
-/*
- * Matches values which should be transformed to `s`.
- */
-
-EXPRESSION_TO_S = /c([iey])/g;
-
-/*
- * Matches values containing `d` which should be
- * transformed to `j`.
- */
-
-EXPRESSION_D_TO_J = /d(g[eiy])/g;
-
-/*
- * Matches `d`.
- */
-
-EXPRESSION_D = /d/g;
-
-/*
- * Matches values containing `gh` of which the `g` should
- * be dropped.
- */
-
-EXPRESSION_G_NOT_FINAL = /g(h[^aeiou])/g;
-
-/*
- * Matches final values of which the `g` should be dropped.
- *
- * Bug: All D's were transformed to T's, weird.
- */
-
-EXPRESSION_GN_OR_GNED_FINAL = /g(n(ed)?)$/g;
-
-/*
- * Matches values of which the `g` should be dropped.
- *
- * Bug: Now, the spec says not to transform G to J when
- * double G's occur. As GG is already removed by
- * duplicate adjacent letters, it's ignored here.
- */
-
-EXPRESSION_G_TO_J = /g([iey])/g;
-
-/*
- * Matches `g`.
- */
-
-EXPRESSION_G = /g/g;
-
-/*
- * Matches values of which the `h` should be dropped.
- */
-
-EXPRESSION_H = /([aeiou])h([^aeiou]|$)/g;
-
-/*
- * Matches `ck`.
- */
-
-EXPRESSION_CK = /ck/g;
-
-/*
- * Matches `ph`.
- */
-
-EXPRESSION_PH = /ph/g;
-
-/*
- * Matches `q`.
- */
-
-EXPRESSION_Q = /q/g;
-
-/*
- * Matches values containing `s` which should be replaced
- * with `x`.
- */
-
-EXPRESSION_S = /s(h|ia|io)/g;
-
-/*
- * Matches values containing `t` which should be replaced
- * with `x`.
- */
-
-EXPRESSION_T = /t(ia|io)/g;
-
-/*
- * Matches `th`.
- */
-
-EXPRESSION_TH = /th/g;
-
-/*
- * Matches `tch`.
- */
-
-EXPRESSION_TCH = /tch/g;
-
-/*
- * Matches `v`.
- */
-
-EXPRESSION_V = /v/g;
-
-/*
- * Matches initial `wh`.
- */
-
-EXPRESSION_WH = /^wh/g;
-
-/*
- * Matches `w`, not followed by a vowel.
- */
-
-EXPRESSION_W = /w([^aeiou]|$)/g;
-
-/*
- * Matches initial `x`.
- */
-
-EXPRESSION_INITIAL_X = /^x/g;
-
-/*
- * Matches `x`.
- */
-
-EXPRESSION_X = /x/g;
-
-/*
- * Matches `y`, not followed by a vowel.
- */
-
-EXPRESSION_Y = /y([^aeiou]|$)/g;
-
-/*
- * Matches `z`.
- */
-
-EXPRESSION_Z = /z/;
-
-/*
- * Matches vowels (no `y`).
- */
-
-EXPRESSION_VOWELS = /[aeiou]/g;
+var SH = 'X';
+var TH = '0';
 
 /**
- * Return the character at `1`.
+ * Turn `character` into a single, upper-case character.
  *
- * @param {string} $0
- * @return {string}
+ * @param {string} character - Value.
+ * @return {string} - `character`’s first character,
+ *   upper-cased.
  */
-function initials($0) {
-    return $0.charAt(1);
+function char(character) {
+    return String(character).charAt(0).toUpperCase();
 }
 
 /**
- * Return the value, `c`s replaced with `x`s.
+ * Get the upper-case character code of the first character
+ * in `character`.
  *
- * @param {string} $0
- * @return {string}
+ * @param {string} character - Value.
+ * @return {number} - `character`’s first character,
+ *   upper-cased, code.
  */
-function cToX($0) {
-    return $0.replace(EXPRESSION_C, 'x');
+function charCode(character) {
+    return char(character).charCodeAt(0);
+}
+
+/**
+ * Check whether `character` is in the alphabet.
+ *
+ * @param {string} character - Value.
+ * @return {boolean} - Whether `character` is in the
+ *   alphabet.
+ */
+function alpha(character) {
+    var code = charCode(character);
+
+    return code >= 65 /* A */ && code <= 90 /* Z */;
+}
+
+/**
+ * Check whether `character` forms a dipthong when
+ * preceding H.
+ *
+ * @param {string} character - Value.
+ * @return {boolean} - Whether `character` forms a
+ *   dipthong.
+ */
+function dipthongH(character) {
+    character = char(character);
+
+    return character === 'C' ||
+        character === 'G' ||
+        character === 'P' ||
+        character === 'S' ||
+        character === 'T';
+}
+
+/**
+ * Check whether `character` is a vowel.
+ *
+ * @param {string} character - Value.
+ * @return {boolean} - Whether `character` is a vowel.
+ */
+function vowel(character) {
+    character = char(character);
+
+    return character === 'A' ||
+        character === 'E' ||
+        character === 'I' ||
+        character === 'O' ||
+        character === 'U';
+}
+
+/**
+ * Check whether `character` would make a `'C'` or `'G'`
+ * soft.
+ *
+ * @param {string} character - Value.
+ * @return {boolean} - Whether `character` softens.
+ */
+function soft(character) {
+    character = char(character);
+
+    return character === 'E' ||
+        character === 'I' ||
+        character === 'Y';
+}
+
+/**
+ * Check whether `character` would make `'GH'` an `'F'`.
+ *
+ * @param {string} character - Value.
+ * @return {boolean} - Whether `character` hardens.
+ */
+function noGHToF(character) {
+    character = char(character);
+
+    return character === 'B' ||
+        character === 'D' ||
+        character === 'H';
 }
 
 /**
@@ -300,46 +184,335 @@ function cToX($0) {
  * algorithm from a value.
  *
  * @param {string} value - value to detect phonetics for.
- * @return {string} phonetics.
+ * @return {string} - phonetics.
  */
 function metaphone(value) {
-    value = String(value)
-        .toLowerCase()
-        .replace(EXPRESSION_DUPLICATE_ADJACENT_LETTERS, '$1')
-        .replace(EXPRESSION_INITIALS, initials)
-        .replace(EXPRESSION_MB_FINAL, '$1')
-        .replace(EXPRESSION_CK, 'k')
-        .replace(EXPRESSION_TO_X, cToX)
-        .replace(EXPRESSION_TO_S, 's$1')
-        .replace(EXPRESSION_C, 'k')
-        .replace(EXPRESSION_D_TO_J, 'j$1')
-        .replace(EXPRESSION_D, 't')
-        .replace(EXPRESSION_G_NOT_FINAL, '$1')
-        .replace(EXPRESSION_GN_OR_GNED_FINAL, '$1')
-        .replace(EXPRESSION_G_TO_J, 'j$1')
-        .replace(EXPRESSION_G, 'k')
-        .replace(EXPRESSION_H, '$1$2')
-        .replace(EXPRESSION_PH, 'f')
-        .replace(EXPRESSION_Q, 'k')
-        .replace(EXPRESSION_S, 'x$1')
-        .replace(EXPRESSION_INITIAL_X, 's')
-        .replace(EXPRESSION_X, 'ks')
-        .replace(EXPRESSION_T, 'x$1')
-        .replace(EXPRESSION_TH, '0')
-        .replace(EXPRESSION_TCH, 'ch')
-        .replace(EXPRESSION_V, 'f')
-        .replace(EXPRESSION_WH, 'w')
-        .replace(EXPRESSION_W, '$1')
-        .replace(EXPRESSION_Y, '$1')
-        .replace(EXPRESSION_Z, 's');
+    var phonized = '';
+    var index = 0;
+    var skip;
+    var next;
+    var current;
+    var prev;
 
-    value = value.charAt(0) + value.slice(1).replace(EXPRESSION_VOWELS, '');
+    /**
+     * Add `characters` to `phonized`.
+     *
+     * @param {string} characters - Characters to add.
+     */
+    function phonize(characters) {
+        phonized += characters;
+    }
 
-    return value.toUpperCase();
+    /**
+     * Get the character offset by `offset` from the
+     * current character.
+     *
+     * @param {number} offset - Offset from `index`.
+     * @return {string} - Character offset from `index` by
+     *   `offset`.
+     */
+    function at(offset) {
+        return value.charAt(index + offset).toUpperCase();
+    }
+
+    /**
+     * Create an `at` function with a bound `offset`.
+     *
+     * @param {number} offset - Offset from `index`.
+     * @return {function(): string} - Function which
+     *   returns a character offset from `index` by the
+     *   bound `offset`.
+     */
+    function atFactory(offset) {
+        return function () {
+            return at(offset);
+        }
+    }
+
+    value = String(value || '');
+
+    if (!value) {
+        return '';
+    }
+
+    next = atFactory(1);
+    current = atFactory(0);
+    prev = atFactory(-1);
+
+    /* Find our first letter */
+    while (!alpha(current())) {
+        if (!current()) {
+            return '';
+        }
+
+        index++;
+    }
+
+    switch (current()) {
+        case 'A':
+            /* AE becomes E */
+            if (next() === 'E') {
+                phonize('E');
+                index += 2;
+            }
+
+            /* Remember, preserve vowels at the beginning */
+            else {
+                phonize('A');
+                index++;
+            }
+
+            break;
+        /* [GKP]N becomes N */
+        case 'G':
+        case 'K':
+        case 'P':
+            if (next() === 'N') {
+                phonize('N');
+                index += 2;
+            }
+
+            break;
+
+        /* WH becomes H,
+           WR becomes R
+           W if followed by a vowel */
+        case 'W':
+            if (next() === 'R') {
+                phonize(next());
+                index += 2;
+            } else if (next() === 'H') {
+                phonize(current());
+                index += 2;
+            } else if (vowel(next())) {
+                phonize('W');
+                index += 2;
+            }
+            /* else ignore */
+            break;
+        /* X becomes S */
+        case 'X':
+            phonize('S');
+            index++;
+
+            break;
+        /* Vowels are kept */
+        /* We did A already
+        case 'A':
+        case 'a':
+        */
+        case 'E':
+        case 'I':
+        case 'O':
+        case 'U':
+            phonize(current());
+            index++;
+            break;
+        default:
+            /* do nothing */
+            break;
+    }
+
+    /* On to the metaphoning */
+    while (current()) {
+        /* How many letters to skip because an eariler encoding handled
+         * multiple letters */
+        skip = 1;
+
+        /* Ignore non-alphas */
+        if (
+            !alpha(current()) ||
+            (current() === prev() && current() !== 'C')
+        ) {
+            index += skip;
+
+            continue;
+        }
+
+        switch (current()) {
+            /* B -> B unless in MB */
+            case 'B':
+                if (prev() !== 'M') {
+                    phonize('B');
+                }
+
+                break;
+            /* 'sh' if -CIA- or -CH, but not SCH, except SCHW.
+             * (SCHW is handled in S)
+             *  S if -CI-, -CE- or -CY-
+             *  dropped if -SCI-, SCE-, -SCY- (handed in S)
+             *  else K
+             */
+            case 'C':
+                if (soft(next())) {
+                    /* C[IEY] */
+
+                    if (next() === 'I' && at(2) === 'A') {
+                        /* CIA */
+                        phonize(SH);
+                    } else if (prev() !== 'S') {
+                        phonize('S');
+                    }
+                } else if (next() === 'H') {
+                    phonize(SH);
+
+                    skip++;
+                } else {
+                    /* C */
+
+                    phonize('K');
+                }
+
+                break;
+            /* J if in -DGE-, -DGI- or -DGY-
+             * else T
+             */
+            case 'D':
+                if (next() === 'G' && soft(at(2))) {
+                    phonize('J');
+                    skip++;
+                } else {
+                    phonize('T');
+                }
+
+                break;
+            /* F if in -GH and not B--GH, D--GH, -H--GH, -H---GH
+             * else dropped if -GNED, -GN,
+             * else dropped if -DGE-, -DGI- or -DGY- (handled in D)
+             * else J if in -GE-, -GI, -GY and not GG
+             * else K
+             */
+            case 'G':
+                if (next() === 'H') {
+                    if (!(noGHToF(at(-3)) || at(-4) === 'H')) {
+                        phonize('F');
+                        skip++;
+                    }
+                } else if (next() === 'N') {
+                    if (!(
+                        !alpha(at(2)) ||
+                        (at(2) === 'E' && at(3) === 'D')
+                    )) {
+                        phonize('K');
+                    }
+                } else if (soft(next()) && prev() !== 'G') {
+                    phonize('J');
+                } else {
+                    phonize('K');
+                }
+
+                break;
+
+            /* H if before a vowel and not after C,G,P,S,T */
+            case 'H':
+                if (vowel(next()) && !dipthongH(prev())) {
+                    phonize('H');
+                }
+
+                break;
+            /* dropped if after C
+             * else K
+             */
+            case 'K':
+                if (prev() !== 'C') {
+                    phonize('K');
+                }
+
+                break;
+            /* F if before H
+             * else P
+             */
+            case 'P':
+                if (next() === 'H') {
+                    phonize('F');
+                } else {
+                    phonize('P');
+                }
+
+                break;
+            /* K
+             */
+            case 'Q':
+                phonize('K');
+                break;
+            /* 'sh' in -SH-, -SIO- or -SIA- or -SCHW-
+             * else S
+             */
+            case 'S':
+                if (next() === 'I' && (at(2) === 'O' || at(2) === 'A')) {
+                    phonize(SH);
+                } else if (next() === 'H') {
+                    phonize(SH);
+
+                    skip++;
+                } else {
+                    phonize('S');
+                }
+
+                break;
+            /* 'sh' in -TIA- or -TIO-
+             * else 'th' before H
+             * else T
+             */
+            case 'T':
+                if (next() === 'I' && (at(2) == 'O' || at(2) === 'A')) {
+                    phonize(SH);
+                } else if (next() === 'H') {
+                    phonize(TH);
+                    skip++;
+                } else if (!(next() === 'C' && at(2) === 'H')) {
+                    phonize('T');
+                }
+
+                break;
+            /* F */
+            case 'V':
+                phonize('F');
+                break;
+
+            case 'W':
+                if (vowel(next())) {
+                    phonize('W');
+                }
+
+                break;
+            /* KS */
+            case 'X':
+                phonize('KS');
+
+                break;
+            /* Y if followed by a vowel */
+            case 'Y':
+                if (vowel(next())) {
+                    phonize('Y');
+                }
+
+                break;
+            /* S */
+            case 'Z':
+                phonize('S');
+
+                break;
+            /* No transformation */
+            case 'F':
+            case 'J':
+            case 'L':
+            case 'M':
+            case 'N':
+            case 'R':
+                phonize(current());
+
+                break;
+        }
+
+        index += skip;
+    }
+
+    return phonized;
 }
 
 /*
- * Expose `metaphone`.
+ * Expose.
  */
 
 module.exports = metaphone;
