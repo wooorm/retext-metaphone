@@ -4,6 +4,11 @@
 
 <!--lint disable maximum-line-length-->
 
+1.0.1 / 2015-08-03
+==================
+
+*   Update metaphone ([a1a54e7](https://github.com/wooorm/retext-metaphone/commit/a1a54e7))
+
 1.0.0 / 2015-08-01
 ==================
 
